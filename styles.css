@@ -1,0 +1,10 @@
+canvas {
+  width: 800px;
+  height: 800px;
+  border: 5px solid black;
+}
+.color-option {
+  height: 50px;
+  width: 50px;
+  cursor: pointer;
+}
