@@ -7,6 +7,9 @@ const colorOptions = Array.from(
 );
 const modeBtin = document.querySelector("#mode-option");
 const destroyBtn = document.getElementById("destroy-btn");
+const eraserBtn = document.getElementById("eraser-btn");
+const fileInput = document.getElementById("file");
+
 canvas.width = 800;
 canvas.height = 800;
 let isPainting;
@@ -38,6 +41,7 @@ function lineWidthChange(event) {
 function lineColorChange(event) {
   ctx.strokeStyle = event.target.value;
   ctx.fillStyle = event.target.value;
+  console.log(event);
 }
 function onColorsOption(event) {
   const colorOptionValue = event.target.dataset.color;
@@ -59,7 +63,25 @@ function onDestroyClick() {
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, 800, 800);
 }
+function onEraserClick() {
+  ctx.strokeStyle = "white";
+  if (modeBtin.innerText === "Draw") {
+    modeBtin.innerText = "Fill";
+    isFilling = false;
+  }
+}
+function onFilechange(event) {
+  const file = event.target.files[0];
+  const url = URL.createObjectURL(file);
+  console.log(url);
+  image = new Image();
+  image.src = url;
+  image.onload = function () {
+    ctx.drawImage(image, 0, 0);
+  };
+}
 
+fileInput.addEventListener("change", onFilechange);
 canvas.addEventListener("mousemove", onMousemove);
 canvas.addEventListener("mousedown", onMouseDown);
 canvas.addEventListener("mouseup", cancelPainting);
@@ -71,3 +93,4 @@ colorOptions.forEach((eachcolor) =>
 );
 modeBtin.addEventListener("click", onModeclick);
 destroyBtn.addEventListener("click", onDestroyClick);
+eraserBtn.addEventListener("click", onEraserClick);
