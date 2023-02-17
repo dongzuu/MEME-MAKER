@@ -1,3 +1,5 @@
+const saveBtn = document.getElementById("save");
+const textInput = document.getElementById("text");
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 const widthRange = document.querySelector("#width-range");
@@ -9,12 +11,28 @@ const modeBtin = document.querySelector("#mode-option");
 const destroyBtn = document.getElementById("destroy-btn");
 const eraserBtn = document.getElementById("eraser-btn");
 const fileInput = document.getElementById("file");
-
 canvas.width = 800;
 canvas.height = 800;
+ctx.lineCap = "round";
 let isPainting;
 let isFilling;
-
+function onSaveClick() {
+  const url = canvas.toDataURL();
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "myDrawing.png";
+  a.click();
+  console.dir(a);
+}
+function onDubleClick(event) {
+  const myText = textInput.value;
+  if (myText !== "") {
+    ctx.save();
+    ctx.font = `48px 'Press Start 2P'`;
+    ctx.strokeText(myText, event.offsetX, event.offsetY);
+    ctx.restore();
+  }
+}
 function onMousemove(event) {
   if (isPainting) {
     ctx.lineTo(event.offsetX, event.offsetY);
@@ -36,7 +54,9 @@ function cancelPainting() {
   isPainting = false;
 }
 function lineWidthChange(event) {
-  ctx.lineWidth = event.target.value;
+  ctx.strokeText.font = event.target.value;
+  //ctx.strokeTex = event.target.value;
+  console.log(event);
 }
 function lineColorChange(event) {
   ctx.strokeStyle = event.target.value;
@@ -73,14 +93,16 @@ function onEraserClick() {
 function onFilechange(event) {
   const file = event.target.files[0];
   const url = URL.createObjectURL(file);
-  console.log(url);
-  image = new Image();
+  image = new Image(20, 20);
   image.src = url;
-  image.onload = function () {
-    ctx.drawImage(image, 0, 0);
-  };
+  image.addEventListener("load", onLoadFile);
+  console.dir(file);
+  console.dir(event);
 }
 
+function onLoadFile() {
+  ctx.drawImage(image, 0, 0, 800, 800);
+}
 fileInput.addEventListener("change", onFilechange);
 canvas.addEventListener("mousemove", onMousemove);
 canvas.addEventListener("mousedown", onMouseDown);
@@ -94,3 +116,5 @@ colorOptions.forEach((eachcolor) =>
 modeBtin.addEventListener("click", onModeclick);
 destroyBtn.addEventListener("click", onDestroyClick);
 eraserBtn.addEventListener("click", onEraserClick);
+canvas.addEventListener("dblclick", onDubleClick);
+saveBtn.addEventListener("click", onSaveClick);
