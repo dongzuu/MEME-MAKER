@@ -1,3 +1,4 @@
+const textSizeBtn = document.getElementById("text-size");
 const saveBtn = document.getElementById("save");
 const textInput = document.getElementById("text");
 const canvas = document.querySelector("canvas");
@@ -14,8 +15,9 @@ const fileInput = document.getElementById("file");
 canvas.width = 800;
 canvas.height = 800;
 ctx.lineCap = "round";
-let isPainting;
-let isFilling;
+let isPainting = false;
+let isFilling = false;
+
 function onSaveClick() {
   const url = canvas.toDataURL();
   const a = document.createElement("a");
@@ -26,9 +28,10 @@ function onSaveClick() {
 }
 function onDubleClick(event) {
   const myText = textInput.value;
-  if (myText !== "") {
+  if (myText !== null) {
     ctx.save();
-    ctx.font = `48px 'Press Start 2P'`;
+    ctx.lineWidth = 1;
+    ctx.font = "68px sans-serif";
     ctx.strokeText(myText, event.offsetX, event.offsetY);
     ctx.restore();
   }
@@ -39,7 +42,6 @@ function onMousemove(event) {
     ctx.stroke();
     return;
   }
-
   ctx.moveTo(event.offsetX, event.offsetY);
 }
 
@@ -50,18 +52,18 @@ function onMouseDown() {
   }
 }
 function cancelPainting() {
-  ctx.beginPath();
   isPainting = false;
+  ctx.beginPath();
 }
 function lineWidthChange(event) {
-  ctx.strokeText.font = event.target.value;
-  //ctx.strokeTex = event.target.value;
-  console.log(event);
+  ctx.lineWidth = event.target.value;
+}
+function onTextSizeChange(event) {
+  ctx.font = `${event.target.value}px 'Press Start 2P'`;
 }
 function lineColorChange(event) {
   ctx.strokeStyle = event.target.value;
   ctx.fillStyle = event.target.value;
-  console.log(event);
 }
 function onColorsOption(event) {
   const colorOptionValue = event.target.dataset.color;
@@ -103,11 +105,14 @@ function onFilechange(event) {
 function onLoadFile() {
   ctx.drawImage(image, 0, 0, 800, 800);
 }
-fileInput.addEventListener("change", onFilechange);
+
 canvas.addEventListener("mousemove", onMousemove);
 canvas.addEventListener("mousedown", onMouseDown);
 canvas.addEventListener("mouseup", cancelPainting);
 canvas.addEventListener("mouseleave", cancelPainting);
+canvas.addEventListener("dblclick", onDubleClick);
+
+fileInput.addEventListener("change", onFilechange);
 widthRange.addEventListener("change", lineWidthChange);
 colorsRange.addEventListener("change", lineColorChange);
 colorOptions.forEach((eachcolor) =>
@@ -116,5 +121,5 @@ colorOptions.forEach((eachcolor) =>
 modeBtin.addEventListener("click", onModeclick);
 destroyBtn.addEventListener("click", onDestroyClick);
 eraserBtn.addEventListener("click", onEraserClick);
-canvas.addEventListener("dblclick", onDubleClick);
 saveBtn.addEventListener("click", onSaveClick);
+textSizeBtn.addEventListener("change", onTextSizeChange);
