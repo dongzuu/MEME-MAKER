@@ -1,3 +1,4 @@
+const fontSelect = document.getElementById("font-select");
 const textSizeBtn = document.getElementById("text-size");
 const saveBtn = document.getElementById("save");
 const textInput = document.getElementById("text");
@@ -15,8 +16,9 @@ const fileInput = document.getElementById("file");
 canvas.width = 800;
 canvas.height = 800;
 ctx.lineCap = "round";
-let isPainting = false;
-let isFilling = false;
+
+let isPainting;
+let isFilling;
 
 function onSaveClick() {
   const url = canvas.toDataURL();
@@ -26,18 +28,9 @@ function onSaveClick() {
   a.click();
   console.dir(a);
 }
-function onDubleClick(event) {
-  const myText = textInput.value;
-  if (myText !== null) {
-    ctx.save();
-    ctx.lineWidth = 1;
-    ctx.font = "68px sans-serif";
-    ctx.strokeText(myText, event.offsetX, event.offsetY);
-    ctx.restore();
-  }
-}
+
 function onMousemove(event) {
-  if (isPainting) {
+  if (isPainting === true) {
     ctx.lineTo(event.offsetX, event.offsetY);
     ctx.stroke();
     return;
@@ -45,11 +38,12 @@ function onMousemove(event) {
   ctx.moveTo(event.offsetX, event.offsetY);
 }
 
-function onMouseDown() {
+function onMouseDown(event) {
   isPainting = true;
   if (isFilling) {
     ctx.fillRect(0, 0, 800, 800);
   }
+  console.log(event);
 }
 function cancelPainting() {
   isPainting = false;
@@ -58,9 +52,7 @@ function cancelPainting() {
 function lineWidthChange(event) {
   ctx.lineWidth = event.target.value;
 }
-function onTextSizeChange(event) {
-  ctx.font = `${event.target.value}px 'Press Start 2P'`;
-}
+
 function lineColorChange(event) {
   ctx.strokeStyle = event.target.value;
   ctx.fillStyle = event.target.value;
@@ -105,6 +97,18 @@ function onFilechange(event) {
 function onLoadFile() {
   ctx.drawImage(image, 0, 0, 800, 800);
 }
+function onDubleClick(event) {
+  const textSizeValue = textSizeBtn.value;
+  const fontValue = fontSelect.value;
+  const myText = textInput.value;
+  if (myText !== null) {
+    ctx.save();
+    ctx.lineWidth = 1;
+    ctx.font = `${textSizeValue}px ${fontValue}`;
+    ctx.strokeText(myText, event.offsetX, event.offsetY);
+    ctx.restore();
+  }
+}
 
 canvas.addEventListener("mousemove", onMousemove);
 canvas.addEventListener("mousedown", onMouseDown);
@@ -122,4 +126,3 @@ modeBtin.addEventListener("click", onModeclick);
 destroyBtn.addEventListener("click", onDestroyClick);
 eraserBtn.addEventListener("click", onEraserClick);
 saveBtn.addEventListener("click", onSaveClick);
-textSizeBtn.addEventListener("change", onTextSizeChange);
